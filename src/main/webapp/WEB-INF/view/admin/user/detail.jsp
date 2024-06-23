@@ -12,6 +12,17 @@
                 <meta name="author" content="" />
                 <title>Detail User - Admin</title>
                 <link href="/css/styles.css" rel="stylesheet" />
+                <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+                <script>
+                    $(document).ready(() => {
+                        const avatarFile = $("#avatarFile"); // Sửa bộ chọn thành #
+                        avatarFile.change(function (e) {
+                            const imgURL = URL.createObjectURL(e.target.files[0]); // Sửa 'file' thành 'files'
+                            $("#avatarPreview").attr("src", imgURL);
+                            $("#avatarPreview").css({ "display": "block" });
+                        });
+                    });
+                </script>
                 <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
             </head>
 
@@ -35,7 +46,7 @@
                                                 <br>
                                 
                                             </div>
-                                            <div class="card" style="width: 60%;">
+                                            <div class="card" style="width : 60%;">
                                                 <div class="card-header">
                                                     User Information
                                                 </div>
@@ -44,7 +55,12 @@
                                                     <li class="list-group-item">Email : ${user.email}</li>
                                                     <li class="list-group-item">FullName : ${user.fullName}</li>
                                                     <li class="list-group-item">Address : ${user.address}</li>
+                                                    <li class="list-group-item">Role : ${user.role.name}</li>
                                                     <li class="list-group-item">Phone Number : ${user.phone}</li>
+                                                    <li class="list-group-item">Avatar : ${user.avatar}</li>
+                                                    <div class="col-12 mb-3">
+                                                        <img style="max-height : 250px; display: none;" alt="avatar preview" id="avatarPreview" />
+                                                    </div>
                                                 </ul>
                                             </div>
                                             <a href="/admin/user" class="btn btn-success mt-3">Back</a>

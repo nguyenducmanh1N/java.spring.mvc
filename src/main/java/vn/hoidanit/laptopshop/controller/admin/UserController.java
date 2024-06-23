@@ -33,7 +33,6 @@ public class UserController {
 
     public UserController(UserService userService, 
             UploadService uploadService,
-            ServletContext servletContext,
             PasswordEncoder passwordEncoder) {
         this.userService = userService;
         this.uploadService = uploadService;
