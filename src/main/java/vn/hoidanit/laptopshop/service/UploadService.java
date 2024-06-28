@@ -17,15 +17,17 @@ public class UploadService {
     public UploadService( ServletContext servletContext) {
         this.servletContext = servletContext;
     }
-    public String handleSavaeUploadFile(MultipartFile file,String targetFolder){
-    
+    public String handleSaveUploadFile(MultipartFile file,String targetFolder){
+        if (file.isEmpty()) 
+        return "Failed to upload file because the file is empty.";
+            
         String rootPath = this.servletContext.getRealPath("/resources/images");
         String finalName = "";
         try {
             byte[] bytes;
             bytes = file.getBytes();
          
-            File dir = new File(rootPath +File.separator +"avatar");
+            File dir = new File(rootPath +File.separator + targetFolder );
             if(!dir.exists())
                 dir.mkdirs();
 
@@ -43,4 +45,6 @@ public class UploadService {
         }
         return finalName;
     }
+    
+    
 }

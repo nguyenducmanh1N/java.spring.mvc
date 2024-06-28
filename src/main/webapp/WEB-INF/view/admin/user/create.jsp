@@ -1,6 +1,7 @@
 <%@page contentType="text/html" pageEncoding="UTF-8" %>
     <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
         <%@taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
+        
             <!DOCTYPE html>
             <html lang="en">
 
@@ -46,21 +47,34 @@
                                             <form:form method="POST" action="/admin/user/create"
                                                 modelAttribute="newUser" class="row"
                                                 enctype="multipart/form-data">
+                                                
                                                 <div class="mb-3 col-12 col-md-6">
                                                     <label class="form-label">Email address</label>
                                                     <form:input type="email" class="form-control" path="email" />
+                                                    <form:errors path="email" class="text-danger" />
+                                                    
                                                 </div>
                                                 <div class="mb-3 col-12 col-md-6">
+                                                    <c:set var="errorPassword">
+                                                        <form:errors path="password" cssClass="invalid-feedback"/>
+                                                    </c:set>
                                                     <label class="form-label">Password</label>
-                                                    <form:input type="text" class="form-control" path="password" />
+                                                    <form:input type="text" 
+                                                        class="form-control ${not empty errorPassword ? 'is-invalid' : ''}" 
+                                                        path="password" />
+                                                    ${errorPassword}
+                                                    <!-- <form:errors path="password" class="text-danger" /> -->
+                                                    
                                                 </div>
                                                 <div class="mb-3 col-12 col-md-6">
                                                     <label class="form-label">Phone Number</label>
                                                     <form:input type="text" class="form-control" path="phone" />
+                                                    
                                                 </div>
                                                 <div class="mb-3 col-12 col-md-6">
                                                     <label class="form-label">Full Name</label>
                                                     <form:input type="text" class="form-control" path="fullName" />
+                                                    <form:errors path="fullName" class="text-danger" />
                                                 </div>
                                                 <div class="mb-3">
                                                     <label class="form-label">Address</label>

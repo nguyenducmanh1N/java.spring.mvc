@@ -2,10 +2,13 @@ package vn.hoidanit.laptopshop.controller.admin;
 
 import java.util.List;
 
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
+
 import vn.hoidanit.laptopshop.domain.User;
 
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,7 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
-import jakarta.servlet.ServletContext;
+import jakarta.validation.Valid;
 import vn.hoidanit.laptopshop.service.UploadService;
 import vn.hoidanit.laptopshop.service.UserService;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -48,7 +51,7 @@ public class UserController {
         return "hello";
     
     }
-// danh sach user
+    // danh sach user
     @RequestMapping("/admin/user")
     public String getUserPage(Model model) {
         List<User> users = this.userService.getAllUsers();
@@ -70,13 +73,25 @@ public class UserController {
         model.addAttribute("newUser", new User());
         return "admin/user/create";
     }
-// tao moi user
+    // tao moi user
     @PostMapping(value = "/admin/user/create")
-    public String createUserPage(Model model, 
-            @ModelAttribute("newUser") User user1,
-            @RequestParam("hoidanitFile") MultipartFile file) {
+    public String createUserPage( Model model, 
+            @ModelAttribute("newUser") @Valid User user1,
+            BindingResult newUserBindingresult,
+            @RequestParam("hoidanitFile") MultipartFile file
+            ) {
         
-        String avatar = this.uploadService.handleSavaeUploadFile(file,"avatar");
+        // validate
+        List<FieldError> errors = newUserBindingresult.getFieldErrors();
+        for (FieldError error : errors) {
+            System.out.println(">>>>>"+error.getField() + " : " + error.getDefaultMessage());
+        }
+        if (newUserBindingresult.hasErrors()) {
+            return "/admin/user/create";
+            
+        }
+
+        String avatar = this.uploadService.handleSaveUploadFile(file,"avatar");
         String hashPassword = this.passwordEncoder.encode(user1.getPassword());
 
         user1.setAvatar(avatar);
@@ -111,9 +126,7 @@ public class UserController {
     @GetMapping("/admin/user/delete/{id}")
     public String getDeleteUserPage(Model model, @PathVariable Long id) {
         model.addAttribute("id", id);
-        // User user = new User();
-        // user.setId(id);
-        // model.addAttribute("newUser", user);
+       
         model.addAttribute("newUser", new User());
         return "admin/user/delete";
     }
@@ -128,17 +141,3 @@ public class UserController {
 
 }
 
-// @RestController
-// public class UserController {
-
-//     private UserService userService;
-
-//     public UserController(UserService userService) {
-//         this.userService = userService;
-//     }
-
-//     @GetMapping("/")
-//     public String getHomePage() {
-//         return this.userService.handleHello();
-//     }
-// }
